@@ -9,6 +9,7 @@ async function bootstrap() {
     options: {
       package: 'htmltopdf',
       protoPath: join(__dirname, '..', 'src', 'protos', 'html-to-pdf.proto'),
+      url: 'localhost:50051',
     },
   });
   await app.listen();

@@ -13,10 +13,14 @@ let AppService = class AppService {
     async generatePdf(htmlContent) {
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
-        await page.setContent(htmlContent);
-        const pdfBuffer = Buffer.from(await page.pdf({ format: 'A4' }));
+        await page.setContent(htmlContent.html_content);
+        const pdfBuffer = await page.pdf();
         await browser.close();
-        return pdfBuffer.toString('base64');
+        if (!pdfBuffer || pdfBuffer.length === 0) {
+            throw new Error('Error: Empty PDF buffer');
+        }
+        const pdfBase64 = Buffer.from(pdfBuffer).toString('base64');
+        return pdfBase64;
     }
 };
 exports.AppService = AppService;

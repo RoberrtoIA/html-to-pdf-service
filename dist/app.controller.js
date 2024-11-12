@@ -18,7 +18,7 @@ let AppController = class AppController {
         this.appService = appService;
     }
     async generatePdf(data) {
-        const pdfBase64 = await this.appService.generatePdf(data.html_content);
+        const pdfBase64 = await this.appService.generatePdf({ html_content: data.html_content });
         return { pdf_base64: pdfBase64 };
     }
 };
