@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package htmltopdf;
+
+service HtmlToPdfService {
+  rpc GeneratePdf (HtmlRequest) returns (PdfResponse);
+}
+
+message HtmlRequest {
+  string html_content = 1;
+}
+
+message PdfResponse {
+  string pdf_base64 = 1;
+}
