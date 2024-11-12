@@ -8,7 +8,7 @@ async function bootstrap() {
     transport: Transport.GRPC,
     options: {
       package: 'htmltopdf',
-      protoPath: join(__dirname, '../protos/html-to-pdf.proto'),
+      protoPath: join(__dirname, '..', 'src', 'protos', 'html-to-pdf.proto'),
     },
   });
   await app.listen();

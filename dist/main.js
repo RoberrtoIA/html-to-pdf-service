@@ -9,7 +9,7 @@ async function bootstrap() {
         transport: microservices_1.Transport.GRPC,
         options: {
             package: 'htmltopdf',
-            protoPath: (0, path_1.join)(__dirname, '../protos/html-to-pdf.proto'),
+            protoPath: (0, path_1.join)(__dirname, '..', 'src', 'protos', 'html-to-pdf.proto'),
         },
     });
     await app.listen();

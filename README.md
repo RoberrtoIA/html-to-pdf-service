@@ -11,7 +11,6 @@ nest new html-to-pdf-service
 ```bash
 npm install @nestjs/microservices puppeteer
 npm install @grpc/grpc-js
-
 ```
 
 ## 3. Crear una carpeta llamada protos dentro de `src`
