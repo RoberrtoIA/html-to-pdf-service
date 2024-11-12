@@ -4,7 +4,11 @@ import { Transport } from '@nestjs/microservices';
 import { join } from 'path';
 
 async function bootstrap() {
-  const app = await NestFactory.createMicroservice(AppModule, {
+  // Crear la instancia de la aplicación Nest
+  const app = await NestFactory.create(AppModule);
+
+  // Configuración del microservicio gRPC
+  app.connectMicroservice({
     transport: Transport.GRPC,
     options: {
       package: 'htmltopdf',
@@ -14,7 +18,13 @@ async function bootstrap() {
       maxReceiveMessageLength: 50 * 1024 * 1024, // 50MB, ajusta según sea necesario
       maxSendMessageLength: 50 * 1024 * 1024, // 50MB, ajusta según sea necesario
     },
+
   });
-  await app.listen();
+
+  // Iniciar todos los microservicios
+  await app.startAllMicroservices();
+
+  // Iniciar el servidor HTTP (si tienes un servidor REST o algo similar)
 }
+
 bootstrap();
