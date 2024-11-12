@@ -11,13 +11,14 @@ const common_1 = require("@nestjs/common");
 const puppeteer = require("puppeteer");
 let AppService = class AppService {
     async generatePdf(htmlContent) {
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({ headless: true });
         const page = await browser.newPage();
         await page.setContent(htmlContent.html_content);
         const pdfBuffer = await page.pdf();
         await browser.close();
         if (!pdfBuffer || pdfBuffer.length === 0) {
-            throw new Error('Error: Empty PDF buffer');
+            console.log('Error: No PDF generated');
+            return '';
         }
         const pdfBase64 = Buffer.from(pdfBuffer).toString('base64');
         return pdfBase64;

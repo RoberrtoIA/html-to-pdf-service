@@ -13,12 +13,26 @@ exports.AppController = void 0;
 const common_1 = require("@nestjs/common");
 const microservices_1 = require("@nestjs/microservices");
 const app_service_1 = require("./app.service");
+const fs = require("fs");
 let AppController = class AppController {
     constructor(appService) {
         this.appService = appService;
     }
     async generatePdf(data) {
-        const pdfBase64 = await this.appService.generatePdf({ html_content: data.html_content });
+        if (!data || !data.htmlContent || data.htmlContent.trim() === '') {
+            console.log('Error: No HTML content provided');
+            return { pdf_base64: '' };
+        }
+        const pdfBase64 = await this.appService.generatePdf({ html_content: data.htmlContent });
+        console.log('Generated PDF Base64:', pdfBase64);
+        fs.writeFile('pdfBase64.txt', pdfBase64, 'utf8', (err) => {
+            if (err) {
+                console.log('Error writing file:', err);
+            }
+            else {
+                console.log('Archivo pdfBase64.txt creado exitosamente');
+            }
+        });
         return { pdf_base64: pdfBase64 };
     }
 };

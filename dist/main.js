@@ -11,6 +11,8 @@ async function bootstrap() {
             package: 'htmltopdf',
             protoPath: (0, path_1.join)(__dirname, '..', 'src', 'protos', 'html-to-pdf.proto'),
             url: 'localhost:50051',
+            maxReceiveMessageLength: 50 * 1024 * 1024,
+            maxSendMessageLength: 50 * 1024 * 1024,
         },
     });
     await app.listen();

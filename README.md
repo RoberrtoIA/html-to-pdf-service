@@ -110,3 +110,9 @@ bootstrap();
 ```bash
 npm run start:dev
 ```
+
+## Tests:
+
+`https://www.w3schools.com/w3css/tryit.asp?filename=tryw3css_templates_band&stacked=h`
+`https://lingojam.com/TexttoOneLine`
+`https://onlinestringtools.com/replace-string`

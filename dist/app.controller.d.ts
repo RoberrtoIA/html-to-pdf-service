@@ -1,6 +1,6 @@
 import { AppService } from './app.service';
 interface HtmlRequest {
-    html_content: string;
+    htmlContent: string;
 }
 interface PdfResponse {
     pdf_base64: string;

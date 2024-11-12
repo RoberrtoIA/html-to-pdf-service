@@ -10,6 +10,9 @@ async function bootstrap() {
       package: 'htmltopdf',
       protoPath: join(__dirname, '..', 'src', 'protos', 'html-to-pdf.proto'),
       url: 'localhost:50051',
+      // Límite para el tamaño máximo del mensaje (en bytes)
+      maxReceiveMessageLength: 50 * 1024 * 1024, // 50MB, ajusta según sea necesario
+      maxSendMessageLength: 50 * 1024 * 1024, // 50MB, ajusta según sea necesario
     },
   });
   await app.listen();
