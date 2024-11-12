@@ -8,7 +8,11 @@ nest new html-to-pdf-service
 ```
 
 ## 2. Instala el paquete para crear el pdf a partir del html 
-`npm install @nestjs/microservices puppeteer`
+```bash
+npm install @nestjs/microservices puppeteer
+npm install @grpc/grpc-js
+
+```
 
 ## 3. Crear una carpeta llamada protos dentro de `src`
 
@@ -45,7 +49,8 @@ export class AppService {
     const page = await browser.newPage();
     await page.setContent(htmlContent);
 
-    const pdfBuffer = await page.pdf({ format: 'A4' });
+    const pdfBuffer = Buffer.from(await page.pdf({ format: 'A4' }));
+
     await browser.close();
 
     return pdfBuffer.toString('base64');
@@ -101,6 +106,7 @@ async function bootstrap() {
 bootstrap();
 ```
 
-## 8. ```bash
+## 8. 
+```bash
 npm run start:dev
 ```
