@@ -45,5 +45,3 @@ export class AppController {
     return { pdf_base64: pdfBase64 };  // Devolver pdf_base64 correctamente
   }
 }
-
-

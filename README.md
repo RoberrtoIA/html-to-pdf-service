@@ -2,7 +2,7 @@
 HTML a PDF
 
 
-## 1. Crea el proyectgo
+## 1. Crea el proyecto
 ```bash
 nest new html-to-pdf-service
 ```
@@ -43,16 +43,26 @@ import * as puppeteer from 'puppeteer';
 
 @Injectable()
 export class AppService {
-  async generatePdf(htmlContent: string): Promise<string> {
-    const browser = await puppeteer.launch();
+  async generatePdf(htmlContent: { html_content: string }): Promise<string> {
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
-    await page.setContent(htmlContent);
+    await page.setContent(htmlContent.html_content);
 
-    const pdfBuffer = Buffer.from(await page.pdf({ format: 'A4' }));
-
+    // Generamos el PDF en un buffer
+    const pdfBuffer = await page.pdf();
     await browser.close();
 
-    return pdfBuffer.toString('base64');
+    // Diagnóstico: Verificar que el buffer contiene datos
+    if (!pdfBuffer || pdfBuffer.length === 0) {
+      console.log('Error: No PDF generated');
+      return '';  // Retorna un string vacío si no se genera el PDF
+    }
+
+    // Diagnóstico: Verificar la conversión a base64
+    const pdfBase64 = Buffer.from(pdfBuffer).toString('base64');
+    // console.log('PDF Base64:', pdfBase64);  // Log para verificar la salida base64
+
+    return pdfBase64;
   }
 }
 ```
@@ -64,12 +74,16 @@ import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { AppService } from './app.service';
 
+
+import * as fs from 'fs';
+
+// Definimos las interfaces para los tipos
 interface HtmlRequest {
-  html_content: string;
+  htmlContent: string;  // El HTML que se va a convertir
 }
 
 interface PdfResponse {
-  pdf_base64: string;
+  pdf_base64: string;  // El PDF en base64
 }
 
 @Controller()
@@ -78,8 +92,29 @@ export class AppController {
 
   @GrpcMethod('HtmlToPdfService', 'GeneratePdf')
   async generatePdf(data: HtmlRequest): Promise<PdfResponse> {
-    const pdfBase64 = await this.appService.generatePdf(data.html_content);
-    return { pdf_base64: pdfBase64 };
+    // console.log('Received data:', data);  // Log para verificar los datos recibidos
+
+    if (!data || !data.htmlContent || data.htmlContent.trim() === '') {
+      console.log('Error: No HTML content provided');
+      return { pdf_base64: '' };
+    }
+
+    // Llamamos al servicio y pasamos los datos correctos
+    const pdfBase64 = await this.appService.generatePdf({ html_content: data.htmlContent });
+
+    // Log para verificar el valor retornado
+    console.log('Generated PDF Base64:', pdfBase64);
+
+
+    fs.writeFile('pdfBase64.txt', pdfBase64, 'utf8', (err) => {
+      if (err) {
+        console.log('Error writing file:', err);
+      } else {
+        console.log('Archivo pdfBase64.txt creado exitosamente');
+      }
+    });
+
+    return { pdf_base64: pdfBase64 };  // Devolver pdf_base64 correctamente
   }
 }
 ```
@@ -99,6 +134,9 @@ async function bootstrap() {
       package: 'htmltopdf',
       protoPath: join(__dirname, '..', 'src', 'protos', 'html-to-pdf.proto'),
       url: 'localhost:50051',
+      // Límite para el tamaño máximo del mensaje (en bytes)
+      maxReceiveMessageLength: 50 * 1024 * 1024, // 50MB, ajusta según sea necesario
+      maxSendMessageLength: 50 * 1024 * 1024, // 50MB, ajusta según sea necesario
     },
   });
   await app.listen();
@@ -116,3 +154,4 @@ npm run start:dev
 `https://www.w3schools.com/w3css/tryit.asp?filename=tryw3css_templates_band&stacked=h`
 `https://lingojam.com/TexttoOneLine`
 `https://onlinestringtools.com/replace-string`
+`https://github.com/bloomrpc/bloomrpc/releases`
