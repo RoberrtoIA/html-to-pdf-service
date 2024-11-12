@@ -2,7 +2,9 @@
 HTML a PDF
 
 
-## 1. `nest new html-to-pdf-service`
-
+## 1. 
+```bash
+nest new html-to-pdf-service
+```
 
 ## 2. `npm install @nestjs/microservices puppeteer`
